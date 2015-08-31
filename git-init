@@ -1,0 +1,38 @@
+#!/bin/sh
+
+IFS='/' read -ra TARGET <<< "$1"
+USERNAME="${TARGET[0]}";
+REPO="${TARGET[1]}";
+
+read -r -p "Create new repo: $USERNAME/$REPO [y/N] " confirm
+case $confirm in
+	[yY][eE][sS]|[yY])
+		curl -u $USERNAME \
+			-d "{ \
+				\"name\": \"$REPO\" \
+			}" \
+			https://api.github.com/user/repos
+		echo "Making directory..."
+		mkdir $REPO; cd $REPO;
+		echo "# $REPO" > README.md
+		git init
+		git add README.md
+		git commit -m "first commit"
+		git remote add origin "https://github.com/$USERNAME/$REPO.git"
+		git push -u origin master
+		echo "node_modules/" >> .gitignore
+		echo "coverage/" >> .gitignore
+		echo ".buf" >> .gitignore
+		echo "0.10" > .nvmrc
+		nvm use
+		npm init
+		npm i --D jest-cli@0.4 jest-babel-preprocessor
+		mkdir -p {__tests__,__mocks__,scripts}
+		flow init
+		ll
+		;;
+	*)
+		echo "Cancelled $USERNAME/$REPO.  Bye!"
+		exit 1
+		;;
+esac
