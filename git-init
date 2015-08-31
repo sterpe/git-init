@@ -24,7 +24,7 @@ case $confirm in
 		echo "coverage/" >> .gitignore
 		echo ".buf" >> .gitignore
 		echo "0.10" > .nvmrc
-		nvm use
+		nvm use 0.10
 		npm init
 		npm i --D jest-cli@0.4 jest-babel-preprocessor
 		mkdir -p {__tests__,__mocks__,scripts}
